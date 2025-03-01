@@ -137,10 +137,7 @@ const BackgroundRemoval = () => {
         <p>Processing: {seconds} s</p>
         <button disabled={isRunning} onClick={() => load('remove')}>
           Click me (removeBackground)
-        </button>
-        <button disabled={isRunning} onClick={() => load('segment')}>
-          Click me (applySegmentationMask)
-        </button>
+        </button>        
       </header>
     </div>
   );
