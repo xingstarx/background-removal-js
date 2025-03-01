@@ -125,7 +125,20 @@ const BackgroundRemoval = () => {
             onDrop={(e) => {
               e.preventDefault();
               const file = e.dataTransfer.files[0];
-              if (file) handleFileSelect({ target: { files: [file] } } as any);
+              if (file) {
+                // 创建一个新的 FileList 对象
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                
+                // 创建一个合法的 ChangeEvent
+                const event = {
+                  target: {
+                    files: dataTransfer.files
+                  }
+                } as React.ChangeEvent<HTMLInputElement>;
+                
+                handleFileSelect(event);
+              }
             }}
             onDragOver={(e) => e.preventDefault()}
           >
