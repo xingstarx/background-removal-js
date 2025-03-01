@@ -34,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body style={{ margin: 0, minHeight: '100vh' }}>{children}</body>
     </html>
   );
 }

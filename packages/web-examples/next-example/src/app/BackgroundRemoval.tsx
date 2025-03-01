@@ -192,41 +192,51 @@ const BackgroundRemoval = () => {
       <style jsx>{`
         .app {
           min-height: 100vh;
+          width: 100%;
           background-color: #f8fafc;
-          padding: 40px 20px;
+          display: flex;
+          align-items: flex-start;  /* 改为顶部对齐 */
+          justify-content: center;
+          padding: 40px 0;  /* 添加上下内边距 */
+          box-sizing: border-box;
         }
-    
+
         .container {
+          width: 100%;
           max-width: 800px;
+          padding: 0 20px;
           margin: 0 auto;
+          box-sizing: border-box;
         }
-    
+
         .title {
-          font-size: 32px;
+          font-size: clamp(24px, 5vw, 32px);
           font-weight: 600;
           color: #1e293b;
           text-align: center;
           margin-bottom: 12px;
         }
-    
+
         .description {
           text-align: center;
           color: #64748b;
-          font-size: 16px;
-          margin-bottom: 40px;
+          font-size: clamp(14px, 4vw, 16px);
+          margin-bottom: clamp(24px, 5vw, 40px);
         }
-    
+
         .card {
           background: white;
           border-radius: 16px;
           box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-          padding: 32px;
+          padding: clamp(16px, 4vw, 32px);
+          width: 100%;
+          margin-bottom: 40px;  /* 添加底部间距 */
         }
-    
+
         .drop-zone {
           border: 2px dashed #e2e8f0;
           border-radius: 12px;
-          padding: 48px 32px;
+          padding: clamp(24px, 6vw, 48px) clamp(16px, 4vw, 32px);
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -234,28 +244,76 @@ const BackgroundRemoval = () => {
           cursor: pointer;
           transition: all 0.2s ease;
         }
-    
-        .drop-zone:hover {
-          border-color: #94a3b8;
-          background-color: #f8fafc;
-        }
-    
+
         .upload-icon {
           color: #94a3b8;
-          margin-bottom: 20px;
+          margin-bottom: clamp(12px, 3vw, 20px);
+          width: clamp(32px, 8vw, 48px);
+          height: auto;
         }
-    
+
         .upload-text {
-          font-size: 18px;
+          font-size: clamp(16px, 4vw, 18px);
           color: #334155;
           margin-bottom: 8px;
+          text-align: center;
         }
-    
+
         .upload-hint {
-          font-size: 14px;
+          font-size: clamp(12px, 3.5vw, 14px);
           color: #64748b;
+          text-align: center;
         }
-    
+
+        .result-area {
+          margin-top: clamp(16px, 4vw, 24px);
+        }
+
+        .image-container {
+          position: relative;
+          width: 100%;
+          min-height: 200px;
+          border-radius: 8px;
+          overflow: hidden;
+          background: #f1f5f9;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .preview-image,
+        .result-image {
+          max-width: 100%;
+          max-height: 60vh;
+          width: auto;
+          height: auto;
+          object-fit: contain;
+        }
+
+        .action-button {
+          padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 24px);
+          font-size: clamp(14px, 3.5vw, 16px);
+        }
+
+        @media (max-width: 640px) {
+          .container {
+            padding: 0 12px;
+          }
+
+          .card {
+            border-radius: 12px;
+          }
+
+          .drop-zone {
+            border-radius: 8px;
+          }
+
+          .preview-image,
+          .result-image {
+            max-height: 50vh;
+          }
+        }
+
         .file-input {
           display: none;
         }
