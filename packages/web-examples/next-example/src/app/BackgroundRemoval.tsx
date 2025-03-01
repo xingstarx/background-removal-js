@@ -1,27 +1,21 @@
 'use client';
 
 import {
-  applySegmentationMask,
   Config,
   preload,
-  removeBackground,
-  segmentForeground
+  removeBackground
 } from '@imgly/background-removal';
 import { useEffect, useRef, useState } from 'react';
 
-const images = [
-  'https://images.unsplash.com/photo-1656408308602-05835d990fb1?q=80&w=3200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1686002359940-6a51b0d64f68?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1024&q=80',
-  'https://images.unsplash.com/photo-1590523278191-995cbcda646b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9',
-  'https://images.unsplash.com/photo-1709248835088-03bb0946d6ab?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-];
-
 const BackgroundRemoval = () => {
-  const [imageUrl, setImageUrl] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [resultUrl, setResultUrl] = useState<string>('');
   const [isRunning, setIsRunning] = useState(false);
   const [seconds, setSeconds] = useState('0');
   const [startDate, setStartDate] = useState(Date.now());
-  const [caption, setCaption] = useState('Click me to remove background');
+  const [caption, setCaption] = useState('等待上传图片');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const config: Config = {
@@ -44,22 +38,12 @@ const BackgroundRemoval = () => {
   };
 
   useEffect(() => {
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams(url.search);
-    const imageParam = params.get('image');
-    const auto = params.get('auto') || false;
-
-    const randomImage =
-      imageParam || images[Math.floor(Math.random() * images.length)];
-    setImageUrl(randomImage);
-
     const preloadAssets = async () => {
       try {
         await preload(config);
-        console.log('Asset preloading succeeded');
-        if (auto) load('remove');
+        console.log('模型预加载成功');
       } catch (error) {
-        console.error('Asset preloading failed:', error);
+        console.error('模型预加载失败:', error);
       }
     };
 
@@ -98,30 +82,30 @@ const BackgroundRemoval = () => {
     setIsRunning(false);
   };
 
-  const load = async (type: string) => {
-    const params = new URLSearchParams(window.location.search);
-    const imageParam = params.get('image');
-    const randomImage =
-      imageParam || images[Math.floor(Math.random() * images.length)];
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+      setResultUrl('');
+      setCaption('图片已上传，点击按钮开始处理');
+    }
+  };
+
+  const handleRemoveBackground = async () => {
+    if (!selectedFile) return;
 
     setIsRunning(true);
     resetTimer();
-    setImageUrl(randomImage);
 
     try {
-      let imageBlob;
-      if (type === 'remove') {
-        imageBlob = await removeBackground(randomImage, config);
-      } else {
-        const maskBlob = await segmentForeground(randomImage, config);
-        imageBlob = await applySegmentationMask(randomImage, maskBlob, config);
-      }
-
+      const imageBlob = await removeBackground(selectedFile, config);
       const url = URL.createObjectURL(imageBlob);
-      setImageUrl(url);
+      setResultUrl(url);
+      setCaption('处理完成');
     } catch (error) {
-      console.error('Processing failed:', error);
-      setCaption('Processing failed');
+      console.error('处理失败:', error);
+      setCaption('处理失败');
     } finally {
       setIsRunning(false);
       stopTimer();
@@ -129,16 +113,39 @@ const BackgroundRemoval = () => {
   };
 
   return (
-    <div id="app">
-      <header>
-        {/* // eslint-disable-next-line @next/next/no-img-element */}
-        {imageUrl && <img src={imageUrl} alt="logo" />}
-        <p>{caption}</p>
-        <p>Processing: {seconds} s</p>
-        <button disabled={isRunning} onClick={() => load('remove')}>
-          Click me (removeBackground)
-        </button>        
-      </header>
+    <div>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileSelect}
+        ref={fileInputRef}
+      />
+      
+      {previewUrl && (
+        <div>
+          <img src={previewUrl} alt="预览图" />
+          <p>{caption}</p>
+          <p>处理时间: {seconds}s</p>
+          <button 
+            disabled={isRunning} 
+            onClick={handleRemoveBackground}
+          >
+            {isRunning ? '处理中...' : '去除背景'}
+          </button>
+        </div>
+      )}
+
+      {resultUrl && (
+        <div>
+          <img src={resultUrl} alt="处理结果" />
+          <a 
+            href={resultUrl} 
+            download={`removed-bg-${selectedFile?.name || 'image'}.png`}
+          >
+            下载图片
+          </a>
+        </div>
+      )}
     </div>
   );
 };
