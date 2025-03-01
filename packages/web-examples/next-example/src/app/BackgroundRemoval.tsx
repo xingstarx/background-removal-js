@@ -113,39 +113,247 @@ const BackgroundRemoval = () => {
   };
 
   return (
-    <div>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleFileSelect}
-        ref={fileInputRef}
-      />
-      
-      {previewUrl && (
-        <div>
-          <img src={previewUrl} alt="预览图" />
-          <p>{caption}</p>
-          <p>处理时间: {seconds}s</p>
-          <button 
-            disabled={isRunning} 
-            onClick={handleRemoveBackground}
+    <div className="app">
+      <div className="container">
+        <h1 className="title">智能图片背景移除</h1>
+        <p className="description">快速、准确地移除图片背景，支持拖拽上传</p>
+    
+        <div className="card">
+          <div 
+            className="drop-zone"
+            onClick={() => fileInputRef.current?.click()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const file = e.dataTransfer.files[0];
+              if (file) handleFileSelect({ target: { files: [file] } } as any);
+            }}
+            onDragOver={(e) => e.preventDefault()}
           >
-            {isRunning ? '处理中...' : '去除背景'}
-          </button>
+            <div className="upload-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" fill="none">
+                <path d="M12 15V3m0 0L8 7m4-4l4 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <p className="upload-text">拖拽图片到此处</p>
+            <p className="upload-hint">或点击选择文件</p>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              ref={fileInputRef}
+              className="file-input"
+            />
+          </div>
+    
+          {previewUrl && (
+            <div className="result-area">
+              <div className="image-container">
+                <img src={previewUrl} alt="预览图" className="preview-image" />
+                {isRunning && (
+                  <div className="processing-overlay">
+                    <div className="spinner"></div>
+                    <p className="processing-text">{caption}</p>
+                    <p className="processing-time">{seconds}s</p>
+                  </div>
+                )}
+              </div>
+              <div className="action-bar">
+                <button 
+                  disabled={isRunning} 
+                  onClick={handleRemoveBackground}
+                  className="action-button"
+                >
+                  {isRunning ? '处理中...' : '去除背景'}
+                </button>
+              </div>
+            </div>
+          )}
+    
+          {resultUrl && (
+            <div className="result-area">
+              <div className="image-container">
+                <img src={resultUrl} alt="处理结果" className="result-image" />
+              </div>
+              <div className="action-bar">
+                <a 
+                  href={resultUrl} 
+                  download={`removed-bg-${selectedFile?.name || 'image'}.png`}
+                  className="action-button download"
+                >
+                  下载图片
+                </a>
+              </div>
+            </div>
+          )}
         </div>
-      )}
-
-      {resultUrl && (
-        <div>
-          <img src={resultUrl} alt="处理结果" />
-          <a 
-            href={resultUrl} 
-            download={`removed-bg-${selectedFile?.name || 'image'}.png`}
-          >
-            下载图片
-          </a>
-        </div>
-      )}
+      </div>
+    
+      <style jsx>{`
+        .app {
+          min-height: 100vh;
+          background-color: #f8fafc;
+          padding: 40px 20px;
+        }
+    
+        .container {
+          max-width: 800px;
+          margin: 0 auto;
+        }
+    
+        .title {
+          font-size: 32px;
+          font-weight: 600;
+          color: #1e293b;
+          text-align: center;
+          margin-bottom: 12px;
+        }
+    
+        .description {
+          text-align: center;
+          color: #64748b;
+          font-size: 16px;
+          margin-bottom: 40px;
+        }
+    
+        .card {
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          padding: 32px;
+        }
+    
+        .drop-zone {
+          border: 2px dashed #e2e8f0;
+          border-radius: 12px;
+          padding: 48px 32px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+    
+        .drop-zone:hover {
+          border-color: #94a3b8;
+          background-color: #f8fafc;
+        }
+    
+        .upload-icon {
+          color: #94a3b8;
+          margin-bottom: 20px;
+        }
+    
+        .upload-text {
+          font-size: 18px;
+          color: #334155;
+          margin-bottom: 8px;
+        }
+    
+        .upload-hint {
+          font-size: 14px;
+          color: #64748b;
+        }
+    
+        .file-input {
+          display: none;
+        }
+    
+        .result-area {
+          margin-top: 24px;
+        }
+    
+        .image-container {
+          position: relative;
+          width: 100%;
+          min-height: 200px;
+          border-radius: 8px;
+          overflow: hidden;
+          background: #f1f5f9;
+        }
+    
+        .preview-image,
+        .result-image {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
+    
+        .processing-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(255,255,255,0.9);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+    
+        .spinner {
+          width: 40px;
+          height: 40px;
+          border: 3px solid #e2e8f0;
+          border-top-color: #3b82f6;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+    
+        .processing-text {
+          margin-top: 16px;
+          color: #334155;
+          font-size: 16px;
+        }
+    
+        .processing-time {
+          margin-top: 8px;
+          color: #64748b;
+          font-size: 14px;
+        }
+    
+        .action-bar {
+          margin-top: 16px;
+          display: flex;
+          justify-content: center;
+        }
+    
+        .action-button {
+          padding: 12px 24px;
+          border: none;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: 500;
+          background-color: #3b82f6;
+          color: white;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          text-decoration: none;
+        }
+    
+        .action-button:hover {
+          background-color: #2563eb;
+        }
+    
+        .action-button:disabled {
+          background-color: #e2e8f0;
+          cursor: not-allowed;
+        }
+    
+        .action-button.download {
+          background-color: #10b981;
+        }
+    
+        .action-button.download:hover {
+          background-color: #059669;
+        }
+    
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };
