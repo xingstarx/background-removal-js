@@ -21,8 +21,8 @@ const BackgroundRemoval = () => {
   const config: Config = {
     debug: false,
     progress: (key, current, total) => {
-      const [type, subtype] = key.split(':');
-      setCaption(`${type} ${subtype} ${((current / total) * 100).toFixed(0)}%`);
+      const progress = Math.floor((current / total) * 100);
+      setCaption(`处理中 ${progress}%`);
     },
     rescale: true,
     device: 'gpu',
@@ -88,7 +88,7 @@ const BackgroundRemoval = () => {
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
       setResultUrl('');
-      setCaption('图片已上传，点击按钮开始处理');
+      setCaption('准备开始处理');
     }
   };
 
@@ -97,6 +97,7 @@ const BackgroundRemoval = () => {
 
     setIsRunning(true);
     resetTimer();
+    setCaption('正在处理...');
 
     try {
       const imageBlob = await removeBackground(selectedFile, config);
@@ -105,7 +106,7 @@ const BackgroundRemoval = () => {
       setCaption('处理完成');
     } catch (error) {
       console.error('处理失败:', error);
-      setCaption('处理失败');
+      setCaption('处理失败，请重试');
     } finally {
       setIsRunning(false);
       stopTimer();
