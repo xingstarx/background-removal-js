@@ -43,6 +43,15 @@ export default function RootLayout({
           src="https://app.pageview.app/js/script.js"
           strategy="afterInteractive"
         />
+
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6001362307342407"
+          data-overlays="bottom"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+        
       </body>
     </html>
   );
