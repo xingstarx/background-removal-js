@@ -152,7 +152,7 @@ const BackgroundRemoval = () => {
   return (
     <div className="app">
 
-      {/* 左侧广告位 - 仅PC端显示 */}
+      {/* 左侧广告位 - bg-is-index-left 仅PC端显示 */}
       {!isMobile && (
         <div className="side-ad left-ad">
           <ins className="adsbygoogle"
@@ -163,7 +163,7 @@ const BackgroundRemoval = () => {
                  textAlign: 'center'
                }}
                data-ad-client="ca-pub-6001362307342407"
-               data-ad-slot="7658691644">
+               data-ad-slot="4371867536">
           </ins>
         </div>
       )}
@@ -183,7 +183,7 @@ const BackgroundRemoval = () => {
                      textAlign: 'left'
                    }}
                    data-ad-client="ca-pub-6001362307342407"
-                   data-ad-slot="7658691644" >
+                   data-ad-slot="3058785860" >
               </ins>
             </div>
         )}
@@ -281,7 +281,7 @@ const BackgroundRemoval = () => {
                        textAlign: 'left'
                      }}
                      data-ad-client="ca-pub-6001362307342407"
-                     data-ad-slot="7658691644" >
+                     data-ad-slot="8251402797" >
                 </ins>
               </div>
           )}
@@ -289,7 +289,7 @@ const BackgroundRemoval = () => {
         </div>
       </div>
 
-      {/* 右侧广告位 - 仅PC端显示 */}
+      {/* 右侧广告位 - 仅PC端显示  bg-is-index-right */}
       {!isMobile && (
         <div className="side-ad right-ad">
           <ins className="adsbygoogle"
@@ -300,7 +300,7 @@ const BackgroundRemoval = () => {
                  textAlign: 'center'
                }}
                data-ad-client="ca-pub-6001362307342407"
-               data-ad-slot="7658691644">
+               data-ad-slot="6692868993">
           </ins>
         </div>
       )}
