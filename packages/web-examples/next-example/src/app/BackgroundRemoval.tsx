@@ -38,13 +38,10 @@ const BackgroundRemoval = () => {
         if (window.adsbygoogle === undefined) {
           window.adsbygoogle = [];
         }
-        // 根据是否为移动端决定推送多少个广告, 目前pc跟移动端都一样，都是两个广告
+        // 根据是否为移动端决定推送多少个广告, 目前pc 4个，移动端 0个
         if (isMobile) {
-          window.adsbygoogle.push({});
-          window.adsbygoogle.push({});
-          window.adsbygoogle.push({});
+          // window.adsbygoogle.push({});
         } else {
-          window.adsbygoogle.push({});
           window.adsbygoogle.push({});
           window.adsbygoogle.push({});
           window.adsbygoogle.push({});
@@ -533,8 +530,8 @@ const BackgroundRemoval = () => {
 
         /* 广告容器样式 */
         .ad-container {
-          background-color: #f0f9ff;
-          border: 1px solid #bae6fd;
+          //background-color: #f0f9ff;
+          //border: 1px solid #bae6fd;
           padding: 4px;
           margin: 10px 0;
           min-height: 90px;
@@ -542,11 +539,11 @@ const BackgroundRemoval = () => {
         }
         
         .ad-container::before {
-          content: "广告区域";
+          //content: "广告区域";
           position: absolute;
           top: 0;
           left: 0;
-          background-color: #0ea5e9;
+          //background-color: #0ea5e9;
           color: white;
           font-size: 10px;
           padding: 2px 6px;
@@ -555,11 +552,11 @@ const BackgroundRemoval = () => {
         }
         
         .ad-container-top::before {
-          content: "顶部广告区域";
+          //content: "顶部广告区域";
         }
         
         .ad-container-bottom::before {
-          content: "底部广告区域";
+          //content: "底部广告区域";
         }
 
         /* 侧边广告样式 */
@@ -569,8 +566,8 @@ const BackgroundRemoval = () => {
           transform: translateY(-50%);
           width: 120px;
           height: 600px;
-          background-color: #fff1f2; /* 浅粉色背景 */
-          border: 1px solid #fecdd3; /* 粉色边框 */
+          //background-color: #fff1f2; /* 浅粉色背景 */
+          //border: 1px solid #fecdd3; /* 粉色边框 */
           padding: 4px;
           display: flex;
           align-items: center;
@@ -588,11 +585,11 @@ const BackgroundRemoval = () => {
 
         /* 为侧边广告添加标签 */
         .side-ad::before {
-          content: "侧边广告";
+          //content: "侧边广告";
           position: absolute;
           top: 0;
           left: 0;
-          background-color: #e11d48; /* 深粉色背景 */
+          //background-color: #e11d48; /* 深粉色背景 */
           color: white;
           font-size: 10px;
           padding: 2px 6px;
@@ -601,11 +598,11 @@ const BackgroundRemoval = () => {
         }
 
         .left-ad::before {
-          content: "左侧广告";
+          //content: "左侧广告";
         }
 
         .right-ad::before {
-          content: "右侧广告";
+          //content: "右侧广告";
         }
 
         /* 在小屏幕上隐藏侧边广告 */
