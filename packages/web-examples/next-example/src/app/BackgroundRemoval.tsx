@@ -18,6 +18,45 @@ const BackgroundRemoval = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  // 检测移动端
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+
+  // AdSense
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        if (window.adsbygoogle === undefined) {
+          window.adsbygoogle = [];
+        }
+        // 根据是否为移动端决定推送多少个广告, 目前pc跟移动端都一样，都是两个广告
+        if (isMobile) {
+          window.adsbygoogle.push({});
+          window.adsbygoogle.push({});
+          window.adsbygoogle.push({});
+        } else {
+          window.adsbygoogle.push({});
+          window.adsbygoogle.push({});
+          window.adsbygoogle.push({});
+          window.adsbygoogle.push({});
+          window.adsbygoogle.push({});
+        }
+      } catch (err) {
+        console.log('AdSense error:', err);
+      }
+    }
+  }, [isMobile]);
+
+
   const config: Config = {
     debug: false,
     progress: (key, current, total) => {
@@ -115,12 +154,45 @@ const BackgroundRemoval = () => {
 
   return (
     <div className="app">
+
+      {/* 左侧广告位 - 仅PC端显示 */}
+      {!isMobile && (
+        <div className="side-ad left-ad">
+          <ins className="adsbygoogle"
+               style={{
+                 display: 'inline-block',
+                 width: '120px',
+                 height: '600px',
+                 textAlign: 'center'
+               }}
+               data-ad-client="ca-pub-6001362307342407"
+               data-ad-slot="7658691644">
+          </ins>
+        </div>
+      )}
+
       <div className="container">
         <h1 className="title">智能图片背景移除</h1>
         <p className="description">快速、准确地移除图片背景，支持拖拽上传</p>
-    
+
+        {/* 由于会被别的页面iframe，那么我们这里就控制一下高度吧 bg-is-index-0  - 仅PC端显示 */}
+        {!isMobile && (
+            <div className="mt-2 rounded-lg border-gray-200 overflow-hidden ad-container ad-container-top">
+              <ins className="adsbygoogle"
+                   style={{
+                     display: 'inline-block',
+                     width: '100%',
+                     height: '90px',
+                     textAlign: 'left'
+                   }}
+                   data-ad-client="ca-pub-6001362307342407"
+                   data-ad-slot="7658691644" >
+              </ins>
+            </div>
+        )}
+
         <div className="card">
-          <div 
+          <div
             className="drop-zone"
             onClick={() => fileInputRef.current?.click()}
             onDrop={(e) => {
@@ -130,14 +202,14 @@ const BackgroundRemoval = () => {
                 // 创建一个新的 FileList 对象
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(file);
-                
+
                 // 创建一个合法的 ChangeEvent
                 const event = {
                   target: {
                     files: dataTransfer.files
                   }
                 } as React.ChangeEvent<HTMLInputElement>;
-                
+
                 handleFileSelect(event);
               }
             }}
@@ -159,7 +231,7 @@ const BackgroundRemoval = () => {
               className="file-input"
             />
           </div>
-    
+
           {previewUrl && (
             <div className="result-area">
               <div className="image-container">
@@ -173,8 +245,8 @@ const BackgroundRemoval = () => {
                 )}
               </div>
               <div className="action-bar">
-                <button 
-                  disabled={isRunning} 
+                <button
+                  disabled={isRunning}
                   onClick={handleRemoveBackground}
                   className="action-button"
                 >
@@ -183,15 +255,15 @@ const BackgroundRemoval = () => {
               </div>
             </div>
           )}
-    
+
           {resultUrl && (
             <div className="result-area">
               <div className="image-container">
                 <img src={resultUrl} alt="处理结果" className="result-image" />
               </div>
               <div className="action-bar">
-                <a 
-                  href={resultUrl} 
+                <a
+                  href={resultUrl}
                   download={`removed-bg-${selectedFile?.name || 'image'}.png`}
                   className="action-button download"
                 >
@@ -200,9 +272,42 @@ const BackgroundRemoval = () => {
               </div>
             </div>
           )}
+
+          {/* 由于会被别的页面iframe，那么我们这里就控制一下高度吧 bg-is-index-1  - 仅PC端显示 */}
+          {!isMobile && (
+              <div className="mt-2 rounded-lg border-gray-200 overflow-hidden ad-container ad-container-bottom">
+                <ins className="adsbygoogle"
+                     style={{
+                       display: 'inline-block',
+                       width: '100%',
+                       height: '90px',
+                       textAlign: 'left'
+                     }}
+                     data-ad-client="ca-pub-6001362307342407"
+                     data-ad-slot="7658691644" >
+                </ins>
+              </div>
+          )}
+
         </div>
       </div>
-    
+
+      {/* 右侧广告位 - 仅PC端显示 */}
+      {!isMobile && (
+        <div className="side-ad right-ad">
+          <ins className="adsbygoogle"
+               style={{
+                 display: 'inline-block',
+                 width: '120px',
+                 height: '600px',
+                 textAlign: 'center'
+               }}
+               data-ad-client="ca-pub-6001362307342407"
+               data-ad-slot="7658691644">
+          </ins>
+        </div>
+      )}
+
       <style jsx>{`
         .app {
           min-height: 100vh;
@@ -425,6 +530,91 @@ const BackgroundRemoval = () => {
         @keyframes spin {
           to { transform: rotate(360deg); }
         }
+
+        /* 广告容器样式 */
+        .ad-container {
+          background-color: #f0f9ff;
+          border: 1px solid #bae6fd;
+          padding: 4px;
+          margin: 10px 0;
+          min-height: 90px;
+          position: relative;
+        }
+        
+        .ad-container::before {
+          content: "广告区域";
+          position: absolute;
+          top: 0;
+          left: 0;
+          background-color: #0ea5e9;
+          color: white;
+          font-size: 10px;
+          padding: 2px 6px;
+          border-bottom-right-radius: 4px;
+          z-index: 1;
+        }
+        
+        .ad-container-top::before {
+          content: "顶部广告区域";
+        }
+        
+        .ad-container-bottom::before {
+          content: "底部广告区域";
+        }
+
+        /* 侧边广告样式 */
+        .side-ad {
+          position: fixed;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 120px;
+          height: 600px;
+          background-color: #fff1f2; /* 浅粉色背景 */
+          border: 1px solid #fecdd3; /* 粉色边框 */
+          padding: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10;
+        }
+
+        .left-ad {
+          left: max(10px, calc(50% - 500px)); /* 距离中心内容左侧一定距离 */
+        }
+
+        .right-ad {
+          right: max(10px, calc(50% - 500px)); /* 距离中心内容右侧一定距离 */
+        }
+
+        /* 为侧边广告添加标签 */
+        .side-ad::before {
+          content: "侧边广告";
+          position: absolute;
+          top: 0;
+          left: 0;
+          background-color: #e11d48; /* 深粉色背景 */
+          color: white;
+          font-size: 10px;
+          padding: 2px 6px;
+          border-bottom-right-radius: 4px;
+          z-index: 1;
+        }
+
+        .left-ad::before {
+          content: "左侧广告";
+        }
+
+        .right-ad::before {
+          content: "右侧广告";
+        }
+
+        /* 在小屏幕上隐藏侧边广告 */
+        @media (max-width: 1200px) {
+          .side-ad {
+            display: none;
+          }
+        }
+
       `}</style>
     </div>
   );
