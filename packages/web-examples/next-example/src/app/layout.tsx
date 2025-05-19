@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import './globals.css';
+import {GoogleAnalytics} from '@next/third-parties/google'
 
 export const metadata: Metadata = {
   title: '免费在线图片背景去除工具 - 无需登录 | ImageSplitter',
@@ -34,25 +35,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
-      <body style={{ margin: 0, minHeight: '100vh' }}>
-        {children}
-        <Script
+      <html lang="zh-CN">
+      <head>
+        <GoogleAnalytics gaId={'G-D351Q150RV'}/>
+      </head>
+      <body style={{margin: 0, minHeight: '100vh'}}>
+      {children}
+      <Script
           defer
           data-domain="removebg.imagesplitter.vip"
           src="https://app.pageview.app/js/script.js"
           strategy="afterInteractive"
-        />
+      />
 
-        <Script
+      <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6001362307342407"
           data-overlays="bottom"
           crossOrigin="anonymous"
           strategy="afterInteractive"
-        />
-        
+      />
+
       </body>
-    </html>
+      </html>
   );
 }
